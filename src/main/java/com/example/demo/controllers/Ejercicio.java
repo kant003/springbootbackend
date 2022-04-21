@@ -104,6 +104,9 @@ public class Ejercicio {
         return web;
     }
 
+   // listar chistes
+
+   // insertar un nuevo chiste
 }
 
 
