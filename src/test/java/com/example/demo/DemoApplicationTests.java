@@ -21,7 +21,7 @@ class DemoApplicationTests {
 	@Test
 	void greetTest(){
 		String resultado = ejercicio.greet();
-		assertEquals("Bienvenido al servidor backend", resultado);
+		assertEquals("Vienvenido al servidor backend", resultado);
 	}
 
 }
