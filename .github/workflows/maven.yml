@@ -23,5 +23,8 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: echo hola
-     
+      run: mvn -B package --file pom.xml
+  test:
+    name: Testeando en java
+    runs-on: ubuntu-latest
+
