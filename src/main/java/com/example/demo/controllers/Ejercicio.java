@@ -9,8 +9,10 @@ import java.util.Map;
 
 import com.example.demo.models.Joke;
 import com.example.demo.models.Person;
+import com.example.demo.models.State;
 import com.example.demo.services.JokeService;
 import com.example.demo.services.RickAndMortyService;
+import com.example.demo.services.StateService;
 import com.example.demo.utils.Utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class Ejercicio {
 
     @Autowired
     JokeService jokeService;
+
+    @Autowired
+    StateService stateService;
 
     // http://localhost:8080/
     @GetMapping("/")
@@ -75,7 +80,7 @@ public class Ejercicio {
         }
         // guardo en el disco duro esa informacion
         try {
-            Utils.save("datos.txt", articleValue+","+priceValue+"\n");
+            Utils.save("datos.txt", articleValue + "," + priceValue + "\n");
         } catch (IOException e) {
             e.printStackTrace();
             return "error al guardar en disco";
@@ -86,57 +91,91 @@ public class Ejercicio {
     }
 
     @DeleteMapping("/removeFile")
-    public String removeFile(){
+    public String removeFile() {
         boolean result = Utils.remove("datos.txt");
         return result ? "borrado correcto" : "no se puede borrar";
-    } 
+    }
 
-    //http://localhost:8080/rickandmorty/random
+    // http://localhost:8080/rickandmorty/random
     @GetMapping("/rickandmorty/random")
-    public String getRickAndMortyRandomCharacter(){
+    public String getRickAndMortyRandomCharacter() {
         Person c = rickAndMortyService.getCharacterFromAPI();
-        return "<img src='"+c.image+"'/>";
-        //return MessageFormat.format("<img src='{0}'/> ", c.image);
+        return "<img src='" + c.image + "'/>";
+        // return MessageFormat.format("<img src='{0}'/> ", c.image);
     }
 
     @GetMapping("/rickandmorty/list")
-    public String getRickAndMortyRandomList(){
+    public String getRickAndMortyRandomList() {
         String web = "<h1>Lista de personas</h1>";
         ArrayList<Person> persons = rickAndMortyService.getCharactersFromAPI();
-        for(Person person : persons){
-            web+="<img src='"+person.image+"'/>";
+        for (Person person : persons) {
+            web += "<img src='" + person.image + "'/>";
         }
         return web;
     }
 
-   // listar chistes
-   @GetMapping("/listarchistes")
-   public String jokeList(){
+    // listar chistes
+    @GetMapping("/listarchistes")
+    public String jokeList() {
         ArrayList<Joke> jokes = jokeService.getAllJokes();
         String listado = "";
-        for(Joke joke: jokes){
+        for (Joke joke : jokes) {
             listado += joke.getText();
-            
+
             listado += "<br/>";
         }
         return listado;
-   }
+    }
 
-   @PostMapping("/insertarchiste")
-   public String addJoke(@RequestParam Map<String, String> body){
-        String jokeText =  body.get("text");
+    @GetMapping("/setState/{value}")
+    public String setState(@PathVariable String value) {
+        try {
+            State state = new State();
+            int entero = Integer.parseInt(value);
+            state.setValue(entero);
+            stateService.saveJoke(state);
+            return "Estado guardado correctamente";
+        } catch (Exception ex) {
+            return "Fallo al guardar estado: " + ex.getMessage();
+        }
+    }
+
+    @GetMapping("/getLastState")
+    public String getLastState() {
+        State state = stateService.getLastStates();
+        return state.getValue().toString() + "";
+    }
+
+    @GetMapping("/getFirstState")
+    public String getFirstState() {
+        State state = stateService.getFirstStates();
+        return state.getValue().toString() + "";
+    }
+
+    @GetMapping("/getAllStates")
+    public String getAllStates() {
+        ArrayList<State> states = stateService.getAllStates();
+        String listado = "";
+        for (State state : states) {
+            listado += state.getValue()+"";
+
+            listado += "<br/>";
+        }
+        return listado;
+    }
+
+   
+
+    @PostMapping("/insertarchiste")
+    public String addJoke(@RequestParam Map<String, String> body) {
+        String jokeText = body.get("text");
         jokeText.replaceAll("<", "");
         jokeText.replaceAll(">", "");
         Joke joke = new Joke();
         joke.setText(jokeText);
         jokeService.saveJoke(joke);
         return "Chiste creado correctamente";
-   }
+    }
 
-
-   // insertar un nuevo chiste
+    // insertar un nuevo chiste
 }
-
-
-
-

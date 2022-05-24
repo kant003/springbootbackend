@@ -15,6 +15,7 @@ public class WebController {
     
     @Autowired
     RickAndMortyService rickAndMortyService;
+    
 
     @RequestMapping("/rickandmorty/listview")
     public String getRickAndMortyListView(Model model){
