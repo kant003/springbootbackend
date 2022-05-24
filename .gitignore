@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b20388310f65a15561b1947e276089ca6995c3f3
 ### STS ###
 .apt_generated
 .classpath
